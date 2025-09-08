@@ -102,53 +102,67 @@ class IncidentSummaryGenerator:
         """Extract and generate action items"""
         
         action_items = []
+        seen_descriptions = set()  # Track unique descriptions
         
         # Extract actions taken
         actions_taken = [msg for msg in messages if msg.get('category') == 'actions']
         for action in actions_taken:
-            action_items.append({
-                'type': 'completed_action',
-                'description': action.get('original_text', ''),
-                'timestamp': action.get('timestamp', ''),
-                'user': action.get('user', ''),
-                'status': 'completed'
-            })
+            description = action.get('original_text', '')
+            if description not in seen_descriptions:
+                action_items.append({
+                    'type': 'completed_action',
+                    'description': description,
+                    'timestamp': action.get('timestamp', ''),
+                    'user': action.get('user', ''),
+                    'status': 'completed'
+                })
+                seen_descriptions.add(description)
         
         # Extract follow-up items from resolution messages
         resolutions = [msg for msg in messages if msg.get('category') == 'resolution']
+        monitoring_added = False
+        postmortem_added = False
+        
         for resolution in resolutions:
             text = resolution.get('original_text', '').lower()
-            if 'monitor' in text:
+            if 'monitor' in text and not monitoring_added:
                 action_items.append({
                     'type': 'follow_up',
                     'description': 'Continue monitoring system stability',
                     'timestamp': resolution.get('timestamp', ''),
                     'status': 'pending'
                 })
-            if 'post-mortem' in text or 'rca' in text:
+                monitoring_added = True
+            if ('post-mortem' in text or 'rca' in text) and not postmortem_added:
                 action_items.append({
                     'type': 'follow_up', 
                     'description': 'Complete post-mortem analysis',
                     'timestamp': resolution.get('timestamp', ''),
                     'status': 'pending'
                 })
+                postmortem_added = True
         
-        # Suggest preventive actions based on diagnostics
+        # Suggest preventive actions based on diagnostics (deduplicated)
         diagnostics = [msg for msg in messages if msg.get('category') == 'diagnostics']
+        memory_monitoring_added = False
+        connection_pool_added = False
+        
         for diagnostic in diagnostics:
             reason = diagnostic.get('reason', '').lower()
-            if 'memory leak' in reason:
+            if 'memory leak' in reason and not memory_monitoring_added:
                 action_items.append({
                     'type': 'preventive',
                     'description': 'Implement memory usage monitoring and alerts',
                     'status': 'suggested'
                 })
-            elif 'connection pool' in reason:
+                memory_monitoring_added = True
+            elif 'connection pool' in reason and not connection_pool_added:
                 action_items.append({
                     'type': 'preventive',
                     'description': 'Review and optimize database connection pool configuration',
                     'status': 'suggested'
                 })
+                connection_pool_added = True
         
         return action_items
     
