@@ -1,0 +1,160 @@
+{
+  "total_messages": 9,
+  "significant_count": 7,
+  "categories": {
+    "diagnostics": 3,
+    "actions": 3,
+    "impact": 0,
+    "resolution": 1
+  },
+  "significance_rate": 77.77777777777779,
+  "summary": "Activity detected: 3 diagnostics, 3 actions, 1 resolution. Tracked 7 significant updates showing incident progression. Key insights: [DIAGNOSTICS] API latency spike of 2+ seconds indicates a potential performance issue that req... | [DIAGNOSTICS] Database connection pool reaching maximum capacity suggests a critical performan... | [ACTIONS] Database connection pool scaling indicates an active remediation effort to addre... | [ACTIONS] The message indicates an active remediation effort through a planned service res....",
+  "significant_messages": [
+    {
+      "significant": true,
+      "category": "diagnostics",
+      "reason": "API latency spike of 2+ seconds indicates a potential performance issue that requires root cause analysis, suggesting a need to investigate underlying service, network, or infrastructure problems that could impact system reliability",
+      "message_id": 1,
+      "timestamp": "2025-01-15T14:30:00Z",
+      "user": "alice",
+      "original_text": "API latency is spiking to 2+ seconds"
+    },
+    {
+      "significant": true,
+      "category": "diagnostics",
+      "reason": "Database connection pool reaching maximum capacity suggests a critical performance bottleneck that requires immediate root cause analysis. The message provides specific diagnostic evidence of a system resource constraint affecting database connectivity, potentially indicating overload, inefficient connection management, or scaling issues.",
+      "message_id": 3,
+      "timestamp": "2025-01-15T14:32:00Z",
+      "user": "alice",
+      "original_text": "Database connection pool is maxed out at 100 connections"
+    },
+    {
+      "significant": true,
+      "category": "actions",
+      "reason": "Database connection pool scaling indicates an active remediation effort to address potential performance or capacity constraints. This is a direct operational intervention to modify system configuration and improve system resilience, which falls under 'Actions & Remediation Efforts' category.",
+      "message_id": 4,
+      "timestamp": "2025-01-15T14:33:00Z",
+      "user": "charlie",
+      "original_text": "Scaling up the database connection pool to 200 connections"
+    },
+    {
+      "significant": true,
+      "category": "actions",
+      "reason": "The message indicates an active remediation effort through a planned service restart to address high latency, which represents a direct technical intervention to resolve a performance issue",
+      "message_id": 5,
+      "timestamp": "2025-01-15T14:35:00Z",
+      "user": "alice",
+      "original_text": "Still seeing high latency, going to restart the API service"
+    },
+    {
+      "significant": true,
+      "category": "actions",
+      "reason": "Direct indication of active remediation effort through service deployment restart, which suggests proactive troubleshooting and potential attempt to resolve a service disruption or performance issue",
+      "message_id": 6,
+      "timestamp": "2025-01-15T14:36:00Z",
+      "user": "alice",
+      "original_text": "Restarting api-service-deployment now"
+    },
+    {
+      "significant": true,
+      "category": "diagnostics",
+      "reason": "Indicates resolution of a previous latency issue, with specific measurement showing return to normal performance (~200ms). Provides concrete diagnostic insight into system performance recovery and potential root cause identification.",
+      "message_id": 7,
+      "timestamp": "2025-01-15T14:38:00Z",
+      "user": "bob",
+      "original_text": "Latency dropped back to normal (~200ms)"
+    },
+    {
+      "significant": true,
+      "category": "resolution",
+      "reason": "Message indicates an incident has been resolved and a confirmation monitoring period is being initiated, which meets the criteria for Resolution & Milestones category, specifically showing post-incident stability verification and closure",
+      "message_id": 8,
+      "timestamp": "2025-01-15T14:39:00Z",
+      "user": "alice",
+      "original_text": "Confirmed - issue resolved. Will monitor for next 30 minutes"
+    }
+  ],
+  "all_results": [
+    {
+      "significant": true,
+      "category": "diagnostics",
+      "reason": "API latency spike of 2+ seconds indicates a potential performance issue that requires root cause analysis, suggesting a need to investigate underlying service, network, or infrastructure problems that could impact system reliability",
+      "message_id": 1,
+      "timestamp": "2025-01-15T14:30:00Z",
+      "user": "alice",
+      "original_text": "API latency is spiking to 2+ seconds"
+    },
+    {
+      "significant": false,
+      "category": null,
+      "reason": "Vague message with no specific technical details, appears to be routine monitoring check without substantive incident information. Lacks concrete evidence of problem, diagnostic findings, actions, or resolution.",
+      "message_id": 2,
+      "timestamp": "2025-01-15T14:31:00Z",
+      "user": "bob",
+      "original_text": "Seeing the same here, checking the monitoring dashboard"
+    },
+    {
+      "significant": true,
+      "category": "diagnostics",
+      "reason": "Database connection pool reaching maximum capacity suggests a critical performance bottleneck that requires immediate root cause analysis. The message provides specific diagnostic evidence of a system resource constraint affecting database connectivity, potentially indicating overload, inefficient connection management, or scaling issues.",
+      "message_id": 3,
+      "timestamp": "2025-01-15T14:32:00Z",
+      "user": "alice",
+      "original_text": "Database connection pool is maxed out at 100 connections"
+    },
+    {
+      "significant": true,
+      "category": "actions",
+      "reason": "Database connection pool scaling indicates an active remediation effort to address potential performance or capacity constraints. This is a direct operational intervention to modify system configuration and improve system resilience, which falls under 'Actions & Remediation Efforts' category.",
+      "message_id": 4,
+      "timestamp": "2025-01-15T14:33:00Z",
+      "user": "charlie",
+      "original_text": "Scaling up the database connection pool to 200 connections"
+    },
+    {
+      "significant": true,
+      "category": "actions",
+      "reason": "The message indicates an active remediation effort through a planned service restart to address high latency, which represents a direct technical intervention to resolve a performance issue",
+      "message_id": 5,
+      "timestamp": "2025-01-15T14:35:00Z",
+      "user": "alice",
+      "original_text": "Still seeing high latency, going to restart the API service"
+    },
+    {
+      "significant": true,
+      "category": "actions",
+      "reason": "Direct indication of active remediation effort through service deployment restart, which suggests proactive troubleshooting and potential attempt to resolve a service disruption or performance issue",
+      "message_id": 6,
+      "timestamp": "2025-01-15T14:36:00Z",
+      "user": "alice",
+      "original_text": "Restarting api-service-deployment now"
+    },
+    {
+      "significant": true,
+      "category": "diagnostics",
+      "reason": "Indicates resolution of a previous latency issue, with specific measurement showing return to normal performance (~200ms). Provides concrete diagnostic insight into system performance recovery and potential root cause identification.",
+      "message_id": 7,
+      "timestamp": "2025-01-15T14:38:00Z",
+      "user": "bob",
+      "original_text": "Latency dropped back to normal (~200ms)"
+    },
+    {
+      "significant": true,
+      "category": "resolution",
+      "reason": "Message indicates an incident has been resolved and a confirmation monitoring period is being initiated, which meets the criteria for Resolution & Milestones category, specifically showing post-incident stability verification and closure",
+      "message_id": 8,
+      "timestamp": "2025-01-15T14:39:00Z",
+      "user": "alice",
+      "original_text": "Confirmed - issue resolved. Will monitor for next 30 minutes"
+    },
+    {
+      "significant": false,
+      "category": null,
+      "reason": "This is a generic thank you message without technical details, content, or substantive incident information. It falls under 'general chatter' and does not provide meaningful insights into incident management or technical resolution.",
+      "message_id": 9,
+      "timestamp": "2025-01-15T14:40:00Z",
+      "user": "david",
+      "original_text": "Thanks for the quick response team!"
+    }
+  ]
+}
