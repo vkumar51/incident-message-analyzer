@@ -35,6 +35,7 @@ class IncidentSlackBot:
         # Bot state
         self.monitored_channels = set()
         self.message_buffer = {}  # channel_id -> list of messages
+        self.processed_messages = {}  # channel_id -> set of message timestamps
         self.last_analysis = {}   # channel_id -> timestamp
         self.analysis_interval = 1800  # 30 minutes in seconds
         
@@ -90,6 +91,7 @@ class IncidentSlackBot:
             # Add to monitoring
             self.monitored_channels.add(channel_id)
             self.message_buffer[channel_id] = []
+            self.processed_messages[channel_id] = set()
             self.last_analysis[channel_id] = datetime.now()
             
             print(f"✅ Now monitoring #{channel_name} (ID: {channel_id})")
@@ -182,7 +184,13 @@ class IncidentSlackBot:
             # Post summary to channel
             self._post_analysis_summary(channel_id, analysis_results, comprehensive_summary)
             
-            # Reset for next analysis
+            # Reset for next analysis but keep track of processed messages
+            analyzed_timestamps = {
+                datetime.fromisoformat(msg['timestamp'].replace('Z', '+00:00')).timestamp() 
+                for msg in messages
+            }
+            self.processed_messages[channel_id].update(analyzed_timestamps)
+            
             self.message_buffer[channel_id] = []
             self.last_analysis[channel_id] = datetime.now()
             
@@ -343,17 +351,20 @@ class IncidentSlackBot:
                 
                 # Process new messages
                 for message in reversed(response['messages']):
-                    # Simple deduplication (in production, use a proper message store)
                     message_ts = float(message.get('ts', 0))
-                    current_messages = self.message_buffer.get(channel_id, [])
                     
-                    # Check if we already have this message
-                    already_exists = any(
+                    # Skip if we've already processed this message
+                    if message_ts in self.processed_messages.get(channel_id, set()):
+                        continue
+                    
+                    # Check if message is already in current buffer
+                    current_messages = self.message_buffer.get(channel_id, [])
+                    already_in_buffer = any(
                         abs(datetime.fromisoformat(msg['timestamp'].replace('Z', '+00:00')).timestamp() - message_ts) < 1
                         for msg in current_messages
                     )
                     
-                    if not already_exists and message.get('text'):
+                    if not already_in_buffer and message.get('text'):
                         self.process_message(channel_id, message)
             
             except Exception as e:
