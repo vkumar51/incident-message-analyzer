@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incident Analysis Feedback</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #1a73e8;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 25px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #333;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #1a73e8;
+            box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.2);
+        }
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        .rating-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .rating-option {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .rating-option input[type="radio"] {
+            width: auto;
+        }
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .checkbox-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .checkbox-option input[type="checkbox"] {
+            width: auto;
+        }
+        .submit-btn {
+            background-color: #1a73e8;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.2s;
+        }
+        .submit-btn:hover {
+            background-color: #1557b0;
+        }
+        .required {
+            color: #d93025;
+        }
+        .incident-info {
+            background-color: #f1f3f4;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 25px;
+        }
+        .success-message {
+            display: none;
+            background-color: #e8f5e8;
+            color: #137333;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        .error-message {
+            display: none;
+            background-color: #fce8e6;
+            color: #d93025;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Incident Analysis Feedback</h1>
+        <p class="subtitle">Help us improve our AI-powered incident analysis</p>
+        
+        <div class="incident-info">
+            <strong>Incident ID:</strong> <span id="incident-id">Loading...</span><br>
+            <strong>Analysis Date:</strong> <span id="analysis-date">Loading...</span><br>
+            <strong>Channel:</strong> <span id="channel-name">Loading...</span>
+        </div>
+
+        <div class="success-message" id="success-message">
+            ✅ Thank you for your feedback! Your input helps us improve the incident analysis.
+        </div>
+
+        <div class="error-message" id="error-message">
+            ❌ There was an error submitting your feedback. Please try again.
+        </div>
+
+        <form id="feedback-form">
+            <div class="form-group">
+                <label for="overall-rating">Overall Analysis Quality <span class="required">*</span></label>
+                <div class="rating-group">
+                    <div class="rating-option">
+                        <input type="radio" id="rating-1" name="overall_rating" value="1" required>
+                        <label for="rating-1">1 - Poor</label>
+                    </div>
+                    <div class="rating-option">
+                        <input type="radio" id="rating-2" name="overall_rating" value="2">
+                        <label for="rating-2">2 - Fair</label>
+                    </div>
+                    <div class="rating-option">
+                        <input type="radio" id="rating-3" name="overall_rating" value="3">
+                        <label for="rating-3">3 - Good</label>
+                    </div>
+                    <div class="rating-option">
+                        <input type="radio" id="rating-4" name="overall_rating" value="4">
+                        <label for="rating-4">4 - Very Good</label>
+                    </div>
+                    <div class="rating-option">
+                        <input type="radio" id="rating-5" name="overall_rating" value="5">
+                        <label for="rating-5">5 - Excellent</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="accuracy">How accurate was the incident categorization?</label>
+                <select id="accuracy" name="accuracy">
+                    <option value="">Select...</option>
+                    <option value="very-accurate">Very Accurate - Perfect categorization</option>
+                    <option value="mostly-accurate">Mostly Accurate - Minor issues</option>
+                    <option value="somewhat-accurate">Somewhat Accurate - Some major issues</option>
+                    <option value="inaccurate">Inaccurate - Mostly wrong</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="usefulness">How useful was the executive summary?</label>
+                <select id="usefulness" name="usefulness">
+                    <option value="">Select...</option>
+                    <option value="very-useful">Very Useful - Saved significant time</option>
+                    <option value="useful">Useful - Helped understand the incident</option>
+                    <option value="somewhat-useful">Somewhat Useful - Some value</option>
+                    <option value="not-useful">Not Useful - Added no value</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Which aspects were most valuable? (Select all that apply)</label>
+                <div class="checkbox-group">
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="timeline" name="valuable_aspects" value="timeline">
+                        <label for="timeline">Incident Timeline</label>
+                    </div>
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="categorization" name="valuable_aspects" value="categorization">
+                        <label for="categorization">Message Categorization</label>
+                    </div>
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="summary" name="valuable_aspects" value="summary">
+                        <label for="summary">Executive Summary</label>
+                    </div>
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="action-items" name="valuable_aspects" value="action-items">
+                        <label for="action-items">Action Items</label>
+                    </div>
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="impact-assessment" name="valuable_aspects" value="impact-assessment">
+                        <label for="impact-assessment">Impact Assessment</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="missing-info">What information was missing or incorrect?</label>
+                <textarea id="missing-info" name="missing_info" placeholder="Describe any important details that were missed or incorrectly analyzed..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="improvements">Suggestions for improvement</label>
+                <textarea id="improvements" name="improvements" placeholder="How could the analysis be more helpful for your team?"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="role">Your role (optional)</label>
+                <select id="role" name="role">
+                    <option value="">Select...</option>
+                    <option value="incident-commander">Incident Commander</option>
+                    <option value="sre">Site Reliability Engineer</option>
+                    <option value="developer">Developer</option>
+                    <option value="devops">DevOps Engineer</option>
+                    <option value="manager">Engineering Manager</option>
+                    <option value="support">Support Engineer</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email (optional - for follow-up questions)</label>
+                <input type="email" id="email" name="email" placeholder="your.email@company.com">
+            </div>
+
+            <button type="submit" class="submit-btn">Submit Feedback</button>
+        </form>
+    </div>
+
+    <script>
+        // Get URL parameters to populate incident info
+        const urlParams = new URLSearchParams(window.location.search);
+        document.getElementById('incident-id').textContent = urlParams.get('incident_id') || 'N/A';
+        document.getElementById('analysis-date').textContent = urlParams.get('date') || 'N/A';
+        document.getElementById('channel-name').textContent = urlParams.get('channel') || 'N/A';
+
+        // Handle form submission
+        document.getElementById('feedback-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const data = {
+                incident_id: urlParams.get('incident_id'),
+                channel: urlParams.get('channel'),
+                analysis_date: urlParams.get('date'),
+                timestamp: new Date().toISOString(),
+                feedback: {}
+            };
+
+            // Collect all form data
+            for (let [key, value] of formData.entries()) {
+                if (key === 'valuable_aspects') {
+                    if (!data.feedback[key]) data.feedback[key] = [];
+                    data.feedback[key].push(value);
+                } else {
+                    data.feedback[key] = value;
+                }
+            }
+
+            try {
+                // Submit to your backend endpoint
+                const response = await fetch('/api/submit-feedback', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    document.getElementById('success-message').style.display = 'block';
+                    document.getElementById('error-message').style.display = 'none';
+                    document.getElementById('feedback-form').style.display = 'none';
+                } else {
+                    throw new Error('Submission failed');
+                }
+            } catch (error) {
+                console.error('Error submitting feedback:', error);
+                document.getElementById('error-message').style.display = 'block';
+                document.getElementById('success-message').style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

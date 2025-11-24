@@ -196,10 +196,12 @@ class IncidentSlackBot:
             
             # Save analysis results
             self._save_analysis_results(channel_id, comprehensive_summary)
+            self._log_basic_metrics(channel_id, True)
             
         except Exception as e:
             print(f"❌ Analysis failed: {e}")
             self._post_error_message(channel_id, str(e))
+            self._log_basic_metrics(channel_id, False, e)
     
     def _post_analysis_summary(self, channel_id: str, analysis: Dict, summary: Dict):
         """Post analysis summary to Slack channel"""
@@ -279,6 +281,29 @@ class IncidentSlackBot:
                 }
             })
         
+        # Add feedback section
+        blocks.append({
+            "type": "divider"
+        })
+        
+        blocks.append({
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": "*Help us improve!* 📋"
+            },
+            "accessory": {
+                "type": "button",
+                "text": {
+                    "type": "plain_text",
+                    "text": "Give Feedback",
+                    "emoji": True
+                },
+                "url": "https://docs.google.com/forms/d/e/1FAIpQLScs50MAteC0TZ2YefvXJHtKw1PZUeqSRy3PDpuiGXk6FIMnqw/viewform?usp=publish-editor",
+                "action_id": "feedback_button"
+            }
+        })
+        
         # Add footer
         blocks.append({
             "type": "context",
@@ -314,6 +339,23 @@ class IncidentSlackBot:
             print(f"💾 Analysis saved to {filename}")
         except Exception as e:
             print(f"⚠️ Failed to save analysis: {e}")
+    
+    def _log_basic_metrics(self, channel_id: str, success: bool, error=None):
+        """Simple lightweight logging for performance monitoring"""
+        metrics = {
+            'date': datetime.now().strftime('%Y-%m-%d'),
+            'time': datetime.now().strftime('%H:%M:%S'),
+            'channel': self._get_channel_name(channel_id),
+            'success': success,
+            'error': str(error) if error else None,
+            'timestamp': datetime.now().isoformat()
+        }
+        
+        try:
+            with open('usage_metrics.jsonl', 'a') as f:
+                f.write(json.dumps(metrics) + '\n')
+        except Exception as e:
+            print(f"⚠️ Failed to log metrics: {e}")
     
     def start_monitoring(self):
         """Start monitoring channels for messages"""
