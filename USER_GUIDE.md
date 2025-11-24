@@ -263,14 +263,52 @@ If you encounter:
 
 ---
 
+## 🗑️ Required File Deletion After WebRCA Storage
+
+### **⚠️ MANDATORY DATA CLEANUP**
+After incident summaries are successfully saved to the **WebRCA database**, all locally stored analysis files **MUST be deleted** from your machine to comply with data retention policies.
+
+### **Specific Files to Delete**
+**Analysis Result Files** (Contains incident data):
+```
+analysis_[channel-name]_[timestamp].json
+usage_metrics.jsonl
+incident_analysis.json  
+incident_comprehensive_summary.json
+```
+
+### **Deletion Process**
+1. **Verify WebRCA Storage**: Confirm summary is properly stored in WebRCA
+2. **Identify Local Files**: Run `ls -la analysis_*.json usage_metrics.jsonl`
+3. **Delete Files**: Run `rm -f analysis_*.json usage_metrics.jsonl`
+4. **Document Deletion**: Log deletion with incident ID and timestamp
+
+### **Quick Deletion Script**
+```bash
+# After confirming WebRCA storage
+rm -f analysis_*.json usage_metrics.jsonl incident*.json
+echo "$(date): Files deleted after WebRCA storage" >> deletion_log.txt
+```
+
+### **Files to KEEP** (No incident data)
+✅ All `.py` files (source code)  
+✅ All `.md` files (documentation)  
+✅ `requirements.txt` and configuration files  
+
+**See**: `SPECIFIC_FILES_TO_DELETE.md` for complete deletion guide
+
+---
+
 ## 📚 Additional Resources
 
 ### **Training Materials**
 - **Video Tutorial**: [Coming Soon]
 - **Best Practices Guide**: This document
+- **File Deletion Guide**: `SPECIFIC_FILES_TO_DELETE.md`
 - **FAQ**: Available at [Internal Wiki Page]
 
 ### **Related Tools**
+- **WebRCA**: Central incident storage system  
 - **Incident Management**: PagerDuty integration documentation
 - **Monitoring**: How to correlate with observability data  
 - **Reporting**: Integration with incident metrics dashboards
