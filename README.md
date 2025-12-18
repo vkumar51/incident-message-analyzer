@@ -86,6 +86,50 @@ results = analyzer.analyze_conversation(messages)
 print(results)
 ```
 
+## Docker & OpenShift Deployment
+
+The application can be containerized and deployed to OpenShift clusters.
+
+### Quick Start with Docker
+
+```bash
+# Build the image
+./build.sh
+
+# Run locally (no channel config needed!)
+docker run --rm -it \
+  -e SLACK_BOT_TOKEN='xoxb-your-token' \
+  -e ANTHROPIC_VERTEX_PROJECT_ID='your-project-id' \
+  incident-message-analyzer:latest
+
+# Then invite the bot to any channel:
+# /invite @claude_incident_analy
+```
+
+### Deploy to OpenShift
+
+```bash
+# Login to OpenShift
+oc login <your-cluster-url>
+
+# Create namespace and deploy
+oc apply -f openshift/namespace.yaml
+oc project incident-analyzer
+
+# Create secrets
+oc create secret generic incident-analyzer-secrets \
+  --from-literal=SLACK_BOT_TOKEN='xoxb-your-token' \
+  --from-literal=ANTHROPIC_VERTEX_PROJECT_ID='your-project-id'
+
+# Deploy
+oc apply -f openshift/configmap.yaml
+oc apply -f openshift/buildconfig.yaml
+oc start-build incident-analyzer
+oc apply -f openshift/deployment-with-imagestream.yaml
+```
+
+For complete deployment instructions, see [DOCKER_OPENSHIFT_DEPLOYMENT.md](DOCKER_OPENSHIFT_DEPLOYMENT.md)
+
 ## Configuration
 
 The bot can be configured through environment variables:
@@ -93,6 +137,8 @@ The bot can be configured through environment variables:
 - `SLACK_BOT_TOKEN` - Your Slack bot token (required)
 - `ANTHROPIC_VERTEX_PROJECT_ID` - Google Cloud project ID (required)
 - `ANTHROPIC_VERTEX_REGION` - GCP region (default: us-central1)
+
+**Note**: No channel configuration needed! The bot runs in **invite-only mode** - simply invite it to any channel you want to monitor using `/invite @bot_name` in Slack.
 
 ## Analysis Categories
 

@@ -1,0 +1,117 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: incident-analyzer
+  namespace: incident-analyzer
+  labels:
+    app: claude-incident-analyzer
+    version: "2.0"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: claude-incident-analyzer
+  template:
+    metadata:
+      labels:
+        app: claude-incident-analyzer
+        version: "2.0"
+      annotations:
+        description: "AI-powered Slack incident message analyzer"
+    spec:
+      # Security context for the pod
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+
+      containers:
+      - name: slack-bot
+        image: quay.io/openshift-online/incident-message-analyzer:latest
+        imagePullPolicy: Always
+
+        # Environment variables from Secret
+        env:
+        - name: SLACK_BOT_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: incident-analyzer-secrets
+              key: SLACK_BOT_TOKEN
+        - name: ANTHROPIC_VERTEX_PROJECT_ID
+          valueFrom:
+            secretKeyRef:
+              name: incident-analyzer-secrets
+              key: ANTHROPIC_VERTEX_PROJECT_ID
+
+        # Environment variables from ConfigMap
+        - name: ANTHROPIC_VERTEX_REGION
+          valueFrom:
+            configMapKeyRef:
+              name: incident-analyzer-config
+              key: ANTHROPIC_VERTEX_REGION
+        # NOTE: SLACK_CHANNEL_NAME no longer needed - bot runs in invite-only mode
+
+        # Security context for container
+        securityContext:
+          allowPrivilegeEscalation: false
+          runAsNonRoot: true
+          runAsUser: 1001
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: false
+
+        # Resource limits and requests
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+
+        # Volume mounts for data persistence
+        volumeMounts:
+        - name: data-volume
+          mountPath: /app/data
+
+        # Liveness probe to restart if container is unhealthy
+        livenessProbe:
+          exec:
+            command:
+            - pgrep
+            - python3
+          initialDelaySeconds: 30
+          periodSeconds: 30
+          timeoutSeconds: 5
+          failureThreshold: 3
+
+        # Readiness probe to know when container is ready
+        readinessProbe:
+          exec:
+            command:
+            - pgrep
+            - python3
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 5
+
+      # Volumes
+      volumes:
+      - name: data-volume
+        emptyDir: {}
+
+      # Restart policy
+      restartPolicy: Always
+
+      # Optional: Node selector for specific node placement
+      # nodeSelector:
+      #   node-role.kubernetes.io/worker: ""
+
+      # Optional: Tolerations for taints
+      # tolerations:
+      # - key: "node.kubernetes.io/not-ready"
+      #   operator: "Exists"
+      #   effect: "NoExecute"
+      #   tolerationSeconds: 300

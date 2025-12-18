@@ -1,0 +1,49 @@
+---
+apiVersion: image.openshift.io/v1
+kind: ImageStream
+metadata:
+  name: incident-analyzer
+  namespace: incident-analyzer
+  labels:
+    app: claude-incident-analyzer
+spec:
+  lookupPolicy:
+    local: false
+---
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  name: incident-analyzer
+  namespace: incident-analyzer
+  labels:
+    app: claude-incident-analyzer
+spec:
+  source:
+    type: Git
+    git:
+      uri: https://github.com/openshift-online/incident-message-analyzer.git
+      ref: main
+    contextDir: .
+  strategy:
+    type: Docker
+    dockerStrategy:
+      dockerfilePath: Dockerfile
+  output:
+    to:
+      kind: ImageStreamTag
+      name: incident-analyzer:latest
+  triggers:
+  - type: ConfigChange
+  - type: GitHub
+    github:
+      secret: github-webhook-secret
+  - type: Generic
+    generic:
+      secret: generic-webhook-secret
+  runPolicy: Serial
+---
+# To manually trigger a build:
+# oc start-build incident-analyzer -n incident-analyzer
+#
+# To follow the build logs:
+# oc logs -f bc/incident-analyzer -n incident-analyzer

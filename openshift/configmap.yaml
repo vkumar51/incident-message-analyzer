@@ -1,0 +1,21 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: incident-analyzer-config
+  namespace: incident-analyzer
+  labels:
+    app: claude-incident-analyzer
+data:
+  # Google Cloud Vertex AI region (must be us-east5 for Claude access)
+  ANTHROPIC_VERTEX_REGION: "us-east5"
+
+  # NOTE: SLACK_CHANNEL_NAME is NO LONGER NEEDED!
+  # Bot now runs in INVITE-ONLY mode - just invite it to any channel you want to monitor
+  # Use: /invite @claude_incident_analy in any Slack channel
+
+  # Analysis interval in seconds (default: 1800 = 30 minutes)
+  ANALYSIS_INTERVAL: "1800"
+
+  # Message threshold for triggering analysis (recommended: 10)
+  MESSAGE_THRESHOLD: "10"

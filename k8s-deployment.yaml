@@ -1,0 +1,58 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: incident-analyzer
+  namespace: incident-analyzer
+  labels:
+    app: claude-incident-analyzer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: claude-incident-analyzer
+  template:
+    metadata:
+      labels:
+        app: claude-incident-analyzer
+    spec:
+      containers:
+      - name: slack-bot
+        image: docker.io/library/incident-message-analyzer:latest
+        imagePullPolicy: Never  # Use local image from Minikube
+
+        env:
+        - name: SLACK_BOT_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: incident-analyzer-secrets
+              key: SLACK_BOT_TOKEN
+        - name: ANTHROPIC_VERTEX_PROJECT_ID
+          valueFrom:
+            secretKeyRef:
+              name: incident-analyzer-secrets
+              key: ANTHROPIC_VERTEX_PROJECT_ID
+        - name: ANTHROPIC_VERTEX_REGION
+          value: "us-east5"
+        - name: GOOGLE_APPLICATION_CREDENTIALS
+          value: /var/secrets/google/key.json
+
+        volumeMounts:
+        - name: gcp-credentials
+          mountPath: /var/secrets/google
+          readOnly: true
+
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+
+      volumes:
+      - name: gcp-credentials
+        secret:
+          secretName: gcp-credentials
+
+      restartPolicy: Always

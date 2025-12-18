@@ -1,0 +1,10 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: incident-analyzer
+  labels:
+    name: incident-analyzer
+    app: claude-incident-analyzer
+  annotations:
+    description: "Claude AI-powered incident message analysis system"

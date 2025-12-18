@@ -11,11 +11,11 @@ from anthropic import AnthropicVertex
 
 
 class MessageAnalyzer:
-    def __init__(self, project_id: str = None, region: str = "us-east5"):
+    def __init__(self, project_id: str = None, region: str = None):
         """Initialize the Claude SDK client for Vertex AI"""
         self.client = AnthropicVertex(
             project_id=project_id or os.getenv('ANTHROPIC_VERTEX_PROJECT_ID'),
-            region=region
+            region=region or os.getenv('ANTHROPIC_VERTEX_REGION', 'us-east5')
         )
     
     def analyze_message(self, message: str) -> Dict[str, Any]:

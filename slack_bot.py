@@ -38,6 +38,7 @@ class IncidentSlackBot:
         self.processed_messages = {}  # channel_id -> set of message timestamps
         self.last_analysis = {}   # channel_id -> timestamp
         self.analysis_interval = 1800  # 30 minutes in seconds
+        self.message_threshold = 10  # Number of messages to trigger analysis
         
         # Bot info
         self.bot_user_id = None
@@ -155,9 +156,9 @@ class IncidentSlackBot:
         
         # Trigger analysis if:
         # 1. 30+ minutes since last analysis
-        # 2. OR 20+ new messages accumulated
+        # 2. OR threshold new messages accumulated
         time_trigger = (now - last_analysis).total_seconds() > self.analysis_interval
-        message_trigger = messages_count >= 20
+        message_trigger = messages_count >= self.message_threshold
         
         if time_trigger or message_trigger:
             trigger_reason = "time interval" if time_trigger else f"{messages_count} messages"
@@ -452,7 +453,7 @@ def main():
     if test_channel:
         success = bot.add_channel_to_monitor(test_channel)
         if success:
-            print(f"\n🎯 Bot will analyze messages every {bot.analysis_interval/60} minutes or after 20 messages")
+            print(f"\n🎯 Bot will analyze messages every {bot.analysis_interval/60} minutes or after {bot.message_threshold} messages")
             print("💬 Try posting some test incident messages to see analysis in action!")
             
             # Start monitoring
