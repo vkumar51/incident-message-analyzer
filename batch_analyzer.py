@@ -51,7 +51,11 @@ class BatchMessageAnalyzer:
                     if analysis.get('category') == 'actions':
                         actions_taken.append(analysis)
                 
-                print(f"  {i:2d}/{len(messages)}: {'✅' if analysis.get('significant') else '❌'} {msg['text'][:50]}...")
+                status_icon = '✅' if analysis.get('significant') else '❌'
+                print(f"  {i:2d}/{len(messages)}: {status_icon} {msg['text'][:50]}...")
+                # Print error reason if analysis failed
+                if not analysis.get('significant') and 'Error analyzing message' in analysis.get('reason', ''):
+                    print(f"       ERROR: {analysis.get('reason')}")
                 
             except Exception as e:
                 error_analysis = {
