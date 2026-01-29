@@ -33,12 +33,14 @@ COPY *.md ./
 # Create directory for analysis output
 RUN mkdir -p /app/data
 
-# Create non-root user for security
-RUN useradd -m -u 1001 -s /bin/bash slackbot && \
-    chown -R slackbot:slackbot /app
+# OpenShift compatibility: Set permissions for arbitrary user IDs
+# OpenShift runs containers with random UIDs, but always in group 0 (root group)
+RUN chgrp -R 0 /app && \
+    chmod -R g=u /app && \
+    chmod -R g+w /app/data
 
-# Switch to non-root user
-USER slackbot
+# Switch to non-root user (OpenShift will override this with random UID)
+USER 1001
 
 # Set the entrypoint (use invite-only mode - no channel config needed)
 ENTRYPOINT ["python3", "slack_bot_invite_only.py"]
